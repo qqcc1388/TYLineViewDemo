@@ -4,6 +4,7 @@ a simple way for drawing line
 图表绘制的过程实际上是坐标位置的计算过程，至于画线只要有了position,通过CAShapeLayer+BezierPath很快就可以画出来，这里提供一个绘制折线的demo,贵在思路，有需要的可以参考
 
 话不多说，效果图和代码
+
 ![](http://images2017.cnblogs.com/blog/950551/201708/950551-20170814182604428-243169550.gif)
 
 使用方法：
