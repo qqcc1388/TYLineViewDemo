@@ -52,6 +52,10 @@
     [self setNeedsDisplay];
 }
 
+-(void)clear{
+    [self.layer.sublayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
+}
+
 -(void)addLineWithDatas:(NSArray *)datas lineColor:(UIColor *)color animated:(BOOL)animated{
     
     //设置最大值
@@ -86,17 +90,16 @@
 
 -(UIBezierPath *)prepareBezierPathDatas:(NSArray *)datas
 {
-    
     CGFloat totalHeight = CGRectGetHeight(self.frame) - kMarginY*2;
     //    CGFloat maxY = self.maxYvalue;
     CGFloat totoalWidth = CGRectGetWidth(self.frame) - kMarginX*2;
     //x轴每一段的宽度
-    CGFloat perX = totoalWidth/(self.xAxisCount-1)*1.0;
+    CGFloat perX = totoalWidth/((self.xAxisCount-1)*1.0);
     
-    CGFloat yper = totalHeight/self.maxYvalue;  //y轴一个单位的高度
+    CGFloat yper = totalHeight/(self.maxYvalue*1.0);  //y轴一个单位的高度
     //主线段曲线
     UIBezierPath *bezierPath = [UIBezierPath bezierPath];
-
+    
     
     for (int i = 0; i < datas.count; i++) {
         NSInteger valueY = [datas[i] integerValue];
@@ -132,7 +135,7 @@
     [path stroke];
     
     //线段 - y轴
-    CGFloat perHeight = ((totalHeight - kMarginY*2)/(self.yAxisCount));
+    CGFloat perHeight = ((totalHeight - kMarginY*2)/(self.yAxisCount*1.0));
     for (int i = 0; i < self.yAxisCount; i++) {
         CGFloat y = perHeight*i + kMarginY;
         
@@ -145,8 +148,8 @@
     }
     
     //线段 - x轴
-    CGFloat perWidth = (totalWidth - kMarginX*2)/(self.xAxisCount*1.0);
-    for (int i = 0; i < self.xAxisCount; i++) {
+    CGFloat perWidth = (totalWidth - kMarginX*2)/((self.xAxisCount - 1)*1.0);
+    for (int i = 0; i < self.xAxisCount -1; i++) {
         CGFloat x = perWidth*(i+1);
         CGFloat y = totalHeight - kMarginY;
         UIBezierPath *path = [UIBezierPath bezierPath];
@@ -179,3 +182,4 @@
 
 
 @end
+

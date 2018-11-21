@@ -52,7 +52,7 @@
     _backLayer = [[CAShapeLayer alloc] init];
     _backLayer.fillColor = [UIColor grayColor].CGColor;
     _backLayer.frame = self.bounds;
-    [self.layer addSublayer:_backLayer];
+    //    [self.layer addSublayer:_backLayer];
     
     //主线段
     _shapeLayer = [[CAShapeLayer alloc] init];
@@ -62,7 +62,7 @@
     _shapeLayer.strokeColor = [UIColor redColor].CGColor;
     _shapeLayer.fillColor = [UIColor clearColor].CGColor;
     _shapeLayer.frame = self.bounds;
-    [self.layer addSublayer:_shapeLayer];
+    //    [self.layer addSublayer:_shapeLayer];
     
     //初始化
     self.isShowBack = NO;
@@ -70,12 +70,20 @@
     self.backgroundColor = [UIColor cyanColor];
 }
 
--(void)setDatas:(NSArray *)datas{
+-(void)clear{
+    [self.layer.sublayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
+}
+
+-(void)setDatas:(NSArray <NSNumber *>*)datas{
     //保存数据
     _datas = datas;
     
+    //取出最大值
+    CGFloat max =[[datas valueForKeyPath:@"@max.floatValue"] floatValue];
+    
+    //    NSLog(@"%.f",max);
     //设置最大值
-    self.maxYvalue = 200;
+    self.maxYvalue = max;
     //设置xAxisCount
     self.xAxisCount = datas.count;
     
@@ -88,7 +96,7 @@
 {
     
     CGFloat totalHeight = CGRectGetHeight(self.frame) - kMarginY*2;
-//    CGFloat maxY = self.maxYvalue;
+    //    CGFloat maxY = self.maxYvalue;
     CGFloat totoalWidth = CGRectGetWidth(self.frame) - kMarginX*2;
     //x轴每一段的宽度
     CGFloat perX = totoalWidth/(self.xAxisCount-1)*1.0;
@@ -107,6 +115,7 @@
         CGFloat x = kMarginX + perX*i;
         CGFloat y = (totalHeight + kMarginY) - yper*valueY;
         CGPoint point = CGPointMake(x,y);
+        NSLog(@"%@",NSStringFromCGPoint(point));
         if (i == 0) {
             [bezierPath moveToPoint:point];
         }else{
@@ -126,7 +135,9 @@
     animation.fromValue = @(0);
     animation.toValue =@(1);
     self.shapeLayer.path = bezierPath.CGPath;
+    [self.layer addSublayer:self.shapeLayer];
     [self.shapeLayer addAnimation:animation forKey:@"strokeEnd"];
+    [self.layer addSublayer:self.backLayer];
     self.backLayer.path = backPath.CGPath;
 }
 
@@ -138,7 +149,7 @@
     UIBezierPath *path = [UIBezierPath bezierPath];
     [path setLineWidth:1.0f];
     [[UIColor redColor] set];
-
+    
     CGFloat totalWidth = self.bounds.size.width;
     CGFloat totalHeight = self.bounds.size.height;
     
@@ -150,12 +161,12 @@
     //------> x轴
     [path addLineToPoint:CGPointMake(totalWidth - kMarginX, totalHeight - kMarginY)];
     [path stroke];
-
+    
     //线段 - y轴
     CGFloat perHeight = ((totalHeight - kMarginY*2)/(self.yAxisCount));
     for (int i = 0; i < self.yAxisCount; i++) {
         CGFloat y = perHeight*i + kMarginY;
-
+        
         UIBezierPath *path = [UIBezierPath bezierPath];
         [path setLineWidth:1.0f];
         [[UIColor blueColor] set];
@@ -165,8 +176,8 @@
     }
     
     //线段 - x轴
-    CGFloat perWidth = (totalWidth - kMarginX*2)/(self.xAxisCount*1.0);
-    for (int i = 0; i < self.xAxisCount; i++) {
+    CGFloat perWidth = (totalWidth - kMarginX*2)/((self.xAxisCount - 1)*1.0);
+    for (int i = 0; i < self.xAxisCount - 1; i++) {
         CGFloat x = perWidth*(i+1);
         CGFloat y = totalHeight - kMarginY;
         UIBezierPath *path = [UIBezierPath bezierPath];
@@ -179,9 +190,9 @@
     
     //画y轴文字
     NSMutableArray *yArr = [NSMutableArray array];
-
+    
     for (int i = 0; i < self.yAxisCount; i++) {
-
+        
         [yArr  addObject:[NSString stringWithFormat:@"%.f",self.maxYvalue - self.maxYvalue/self.yAxisCount *i]];
     }
     [yArr addObject:@"0"];
@@ -191,10 +202,10 @@
         CGFloat y = ((totalHeight - kMarginY*2)/(self.yAxisCount))*i + kMarginY;
         NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
         [style setAlignment:NSTextAlignmentCenter];
-
+        
         [title drawInRect:CGRectMake(0,y-5, kMarginX, 20) withAttributes:@{NSForegroundColorAttributeName:[UIColor redColor],NSFontAttributeName:[UIFont systemFontOfSize:10],NSParagraphStyleAttributeName:style}];
     }
-
+    
 }
 
 
@@ -211,3 +222,4 @@
 }
 
 @end
+

@@ -19,6 +19,10 @@
  */
 @property (nonatomic,assign) BOOL isShowBack;
 
+/// 移除划线
+-(void)clear;
+
 
 
 @end
+

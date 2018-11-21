@@ -10,6 +10,10 @@
 
 @interface TYMultiLineView : UIView
 
+/// 移除所有划线
+-(void)clear;
+
 -(void)addLineWithDatas:(NSArray *)datas lineColor:(UIColor *)color animated:(BOOL)animated;
 
 @end
+
